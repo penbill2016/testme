@@ -22,9 +22,17 @@
             padding-right: 10px;
             height: 45px;
             background-color: $color_grey_02;
-            width: 100%;
-            .title{
-                color: $color_white_01;
+            width: 100%;           
+            .textfield{
+                display: flex;
+                align-items: flex-end;
+                .title{
+                    color: $color_white_01;
+                    margin-right: 20px;
+                }
+                .text{
+                    color: $color_white_01;
+                }
             }
             .closebtn{
                 width: 30px;
@@ -45,14 +53,15 @@
             background-color: $color_white_01;
             .inputbox{
                 width: 100%;
-                input[type=text]{
+                margin-bottom: 20px;
+                input[type=text],
+                input[type=password]{
                     width: 100%;
                     border:0;
                     border-bottom: 1px solid $color_grey_03;
                     background-color: $color_white_01;
                     color: $color_grey_03;
                     padding: 10px;
-                    margin-bottom: 20px;
                 }
                 button{
                     width: 100%;
@@ -69,12 +78,37 @@
                     }
                 }
             }
-            .forget{
+            .text_right{
                 float: right;
                 cursor: pointer;
                 padding: 0 5px;
+                margin-bottom: 20px;
                 .text{
                     color: $color_grey_03;                   
+                }
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .content{
+                padding: 30px;
+                padding-bottom: 10px;               
+                .inputbox{
+                    margin-bottom: 15px;
+                    button{                   
+                        margin-top: 10px;
+                    }              
+                }
+            }
+        }
+        @media screen and (max-width: 480px) {
+            .content{
+                padding: 15px;
+                padding-bottom: 0px;               
+                .inputbox{
+                    margin-bottom: 10px;
+                    button{                   
+                        margin-top: 0px;
+                    }              
                 }
             }
         }

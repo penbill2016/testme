@@ -2,19 +2,23 @@
     <div>
         <div class="toolbar">
             <router-link class="item" :to="Linkaddtest()" >
-                <div class="icon_test_white"></div>
+                <div class="icon icon_test_white"></div>
                 <p class="text">Add Test</p>
             </router-link>
+            <button type="button" class="item" @click="historyback">
+                <div class="icon icon_moveout_white"></div>
+                <p class="text">Exit</p>
+            </button>
             <button type="button" class="item" v-if="IsItemSelected" @click="DeleteSelected">
-                <div class="icon_trash_white"></div>
+                <div class="icon icon_trash_white"></div>
                 <p class="text">Delete</p>
             </button>
             <button type="button" class="item" v-if="IsOneTestSelected" @click="EditTest">
-                <div class="icon_edit_white"></div>
+                <div class="icon icon_edit_white"></div>
                 <p class="text">Edit</p>
             </button>
             <button type="button" class="item" v-if="IsItemSelected" @click="MoveToFolder">
-                <div class="icon_move_white"></div>
+                <div class="icon icon_folderout_white"></div>
                 <p class="text">Move</p>
             </button>
         </div>
@@ -22,10 +26,15 @@
             <div class="filebox">
                 <div class="headbar">
                     <h6 class="title">{{foldername}}</h6>
-                    <button class="btn" type="button">
-                        <div class="icon_filter"></div>
-                        <p class="text">Filter</p>
-                    </button>
+                    <div class="select_filter">
+                        <select v-model="testFilter" @change="LoadFolderData">
+                            <option>Created</option>
+                            <option>Modified</option>
+                            <option>Correctrate</option>
+                        </select>
+                        <button type="button" :class="{islowtohigh:testAsc}"
+                        @click="[testAsc=!testAsc, LoadFolderData($event)];"></button>
+                    </div>
                 </div>
                 <div class="fileitembox">
                     <div class="fileitem" v-for="(item,index) in tests" :key="index"
@@ -34,7 +43,7 @@
                         @dblclick="OpenTestLB(index)">
                         <div class="titlefield">
                             <div class="title">
-                                <div class="icon_test_black"></div>
+                                <div class="icon icon_test_black"></div>
                                 <p class="text">{{item.name}}</p>
                             </div>
                         </div>
@@ -61,18 +70,21 @@ export default {
             foldername:this.$route.params.foldername,
             opentestid:'',
             opentesttitle:'',
+            testFilter:'Created',
+            testAsc:true,
         }
     },
-    created:function(){
+    mounted(){
         this.LoadFolderData();
     },
     methods:{
         LoadFolderData(){
-            this.$http.get(this.$store.state.dbhost+'/testmedb/api/member/getfolder.php',{
-                params: {
-                    "folderid": this.$route.params.folderid,
-                }
-            }).then((response) => {               
+            this.$http.post(this.$store.state.dbhost+'/testmedb/api/member/getfolder.php',JSON.stringify({
+                "folderid": this.$route.params.folderid,
+                "testorderby":this.testFilter,
+                "testasc":this.testAsc
+            })).then((response) => {    
+                console.log(response.data);           
                 this.tests = [];
                 response.data.forEach(element => {
                     this.tests.push({
@@ -119,30 +131,21 @@ export default {
             return Items;
         },
         DeleteSelected(){
-            this.$swal.fire({
-                title: 'Are you sure?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    let _this = this;
-                    let delfin = function () {
-                        _this.LoadFolderData();
-                        _this.$swal.fire('Deleted!','Your file has been deleted.','success');
-                    }
-                    if (result.value) {
-                        let selecteditems = this.GetSelectedItems();                       
-                        this.$http.post(this.$store.state.dbhost+'/testmedb/api/member/deletetest.php',JSON.stringify({
-                            "testsid": selecteditems.tests,
-                        })).then((response) => {
-                            if(response.data){
-                                delfin();
-                            }
-                        });
+            let _this = this;       
+            this.swalAlertYN('Yes, delete it!',function(){
+                let delfin = function () {
+                    _this.LoadFolderData();
+                    _this.swalAlertText('Deleted!','Your file has been deleted.',true);
+                }
+                let selecteditems = _this.GetSelectedItems();                       
+                _this.$http.post(_this.$store.state.dbhost+'/testmedb/api/member/deletetest.php',JSON.stringify({
+                    "testsid": selecteditems.tests,
+                })).then((response) => {
+                    if(response.data){
+                        delfin();
                     }
                 });
+            });
         },
         EditTest(){
             let testid = '';
@@ -156,31 +159,25 @@ export default {
             this.$router.push('/member/testEdit/'+testname+'/'+this.$route.params.folderid+'/'+testid);
         },
         MoveToFolder(){
-            this.$swal.fire({
-                title: 'Are you sure?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Move it!'
-                }).then((result) => {
-                    let _this = this;
-                    let movefin = function () {
-                        _this.LoadFolderData();
-                        _this.$swal.fire('Move!','Your file has been Moved.','success');
-                    }
-                    if (result.value) {
-                        let selecteditems = this.GetSelectedItems();
-                        this.$http.post(this.$store.state.dbhost+'/testmedb/api/member/movetofolder.php',JSON.stringify({
-                            "testsid": selecteditems.tests,
-                            "folderid": this.$store.getters.getMemberOutfolderId,
-                        })).then((response) => {
-                            if(response.data){
-                                movefin();
-                            }
-                        });
+            let _this = this;       
+            this.swalAlertYN('Yes, Move it!',function(){
+                let movefin = function () {
+                    _this.LoadFolderData();
+                    _this.swalAlertText('Move!','Your file has been Moved.',true);
+                }
+                let selecteditems = _this.GetSelectedItems();
+                _this.$http.post(_this.$store.state.dbhost+'/testmedb/api/member/movetofolder.php',JSON.stringify({
+                    "testsid": selecteditems.tests,
+                    "folderid": _this.$store.getters.getMemberOutfolderId,
+                })).then((response) => {
+                    if(response.data){
+                        movefin();
                     }
                 });
+            });
+        },
+        historyback() {            
+            this.$router.go(-1);    
         },
     },
     computed:{

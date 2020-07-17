@@ -1,64 +1,20 @@
 .blackfield{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #00000080;
     .LBcontent{
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%,-50%);
-        max-width: 600px;
-        width: 90%;
-        background-color: $color_white_01;
-        box-shadow: 0 0 10px $color_grey_03;
-        .headbar{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-left: 20px;
-            padding-right: 10px;
-            height: 45px;
-            background-color: $color_grey_02;
-            width: 100%;
-            .textfield{
-                display: flex;
-                align-items: flex-end;
-                .title{
-                    color: $color_white_01;
-                    margin-right: 20px;
-                }
-                .count{
-                    color: $color_white_01;
-                }
-
-            }
-            .closebtn{
-                width: 30px;
-                height: 30px;
-                background-color: $color_grey_02;
-                box-shadow: 0 0 5px $color_grey_01;
-                border-radius: 50%;
-                @extend %background;
-                background-size: 50% 50%;
-                background-image: url('~@/assets/img/icon/close_white.svg');
-                cursor: pointer;
-            }
-        }
         .content{
-            width: 100%;
-            padding: 40px;
-            padding-bottom: 20px;
-            background-color: $color_white_01;
             .textfield{
                 min-height: 200px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                margin-bottom: 10px;
                 .text{
                     color: $color_grey_01;
+                    text-align: center;
+                }
+                .img{
+                    width: 100%;
+                    padding-bottom: 45%;
+                    @extend %background_100;
                 }
             }
             .btnfield{
@@ -107,6 +63,16 @@
                         background-image: url('~@/assets/img/icon/arrow_black.svg');
                         width: 40px;
                         height: 40px;
+                    }
+                }
+            }
+            @media screen and (max-width: 480px) {
+                .btnfield{
+                    .ansbtnbox{
+                        .correct,
+                        .wrong{
+                            width: calc(50% - 5px);
+                        }
                     }
                 }
             }

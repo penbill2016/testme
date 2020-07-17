@@ -36,11 +36,8 @@ export default {
     name: 'Home',
     data:function(){
         return {
-            islogin:true
+            islogin:true,
         }        
-    },
-    mounted:function(){
-        
     },
     computed:{
         IsLoginLB(){

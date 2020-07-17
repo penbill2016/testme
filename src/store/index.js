@@ -28,6 +28,9 @@ export default new Vuex.Store({
         }
     },
     actions:{
+        updateIsgoogle(context,payload){
+            context.commit('Isgoogle',payload);
+        },
         updateMemberId(context,payload){
             context.commit('MemberId',payload);
         },
@@ -60,6 +63,9 @@ export default new Vuex.Store({
         },
     },
     getters:{
+        getIsgoogle(state){
+            return state.isgoogle;
+        },
         getMemberId(state){
             return state.data.member.id;
         },
@@ -92,6 +98,9 @@ export default new Vuex.Store({
         },
     },
     mutations:{
+        Isgoogle(state,payload){
+            state.isgoogle = payload;
+        },
         MemberId(state,payload){
             state.data.member.id = payload;
         },

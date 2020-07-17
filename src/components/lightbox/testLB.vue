@@ -1,51 +1,49 @@
 <template>
-    <div id="testLB">
-        <div class="blackfield">
-            <div class="LBcontent">
-                <div class="headbar">
-                    <div class="textfield">
-                        <h6 class="title">
-                            {{testtitle}}
-                        </h6>
-                        <h6 class="count">
-                            {{currentindex+1}}/{{QuestionCounts}}
-                        </h6>
-                    </div>
-                    <div class="closebtn" @click="CloseTestLB"></div>
-                </div>
-                <div class="content">
-                    <div class="textfield">
-                        <h4 class="text">
-                            {{CurrentQuestionText}}
-                        </h4>
-                    </div>
-                    <div class="btnfield">
-                        <div class="ansbtnbox" v-if="isfin">
-                            <button class="correct" @click="SaveTest">
-                                <h6 class="text">Save</h6>
-                            </button>
-                            <button class="wrong" @click="CloseTestLB">
-                                <h6 class="text">Cancel</h6>
-                            </button>
-                        </div>
-                        <div class="ansbtnbox" v-if="isanswer&&!isfin">
-                            <button class="correct" @click="Answer(true)">
-                                <h6 class="text">Correct</h6>
-                            </button>
-                            <button class="wrong" @click="Answer(false)">
-                                <h6 class="text">Wrong</h6>
-                            </button>
-                        </div>
-                        <button class="checkbtn" type="button" v-if="!isanswer&&!isfin" @click="ShowAnswer">
-                        </button>
-                    </div>
-                </div>
+    <LBmodel>
+        <template slot="headbar">
+            <div class="textfield">
+                <h6 class="title">
+                    {{testtitle}}
+                </h6>
+                <h6 class="text">
+                    {{currentindex+1}}/{{QuestionCounts}}
+                </h6>
             </div>
-        </div>
-    </div>
+            <div class="closebtn" @click="CloseTestLB"></div>
+        </template>
+        <template slot="content">
+           <div class="textfield">
+                <h4 class="text" v-if="isboardText">
+                    {{boardText}}
+                </h4>
+                <div class="img" v-if="!isboardText" :style="{'background-image':'url('+boardImg+')'}"></div>
+            </div>
+            <div class="btnfield">
+                <div class="ansbtnbox" v-if="isfin">
+                    <button class="correct" @click="SaveTest">
+                        <h6 class="text">Save</h6>
+                    </button>
+                    <button class="wrong" @click="CloseTestLB">
+                        <h6 class="text">Cancel</h6>
+                    </button>
+                </div>
+                <div class="ansbtnbox" v-if="isanswer&&!isfin">
+                    <button class="correct" @click="Answer(true)">
+                        <h6 class="text">Correct</h6>
+                    </button>
+                    <button class="wrong" @click="Answer(false)">
+                        <h6 class="text">Wrong</h6>
+                    </button>
+                </div>
+                <button class="checkbtn" type="button" v-if="!isanswer&&!isfin" @click="ShowAnswer">
+                </button>
+            </div>
+        </template>
+    </LBmodel>    
 </template>
 
 <script>
+import LBmodel from '@/components/lightbox/_LBmodel';
 export default {
     props: {
         testid:{
@@ -65,6 +63,9 @@ export default {
             currentindex:0,
             isanswer:false,
             isfin:false,
+            isboardText:true,
+            boardText:'',
+            boardImg:'',
         }
     },
     created:function(){
@@ -76,8 +77,12 @@ export default {
             let orderindex = 0;
             response.data.forEach(element => {
                 this.testdata.push({
-                    question:element.question,
-                    answer:element.answer,
+                    quesType:element.quesType,
+                    quesText:element.quesText,
+                    ansText:element.ansText,
+                    ansType:element.ansType,
+                    quesImg:element.quesImg,
+                    ansImg:element.ansImg,
                     iscorrect:false
                 });
                 this.order.push(orderindex);
@@ -86,7 +91,7 @@ export default {
             if(this.$props.testmode == 'Random'){
                 this.order = this.shuffle(this.order);
             }
-            
+            this.UpdateTest();
         });
     },
     methods:{
@@ -95,6 +100,7 @@ export default {
         },
         ShowAnswer(){
             this.isanswer = true;
+            this.UpdateTest();
         },
         Answer(_iscorrect){
             this.testdata[this.order[this.currentindex]].iscorrect = _iscorrect;
@@ -105,6 +111,41 @@ export default {
                 this.currentindex++;
                 this.isanswer = false;
             }
+            this.UpdateTest();
+        },
+        UpdateTest(){
+            if(this.QuestionCounts)
+                if(this.isfin){
+                    this.isboardText = true;
+                    this.boardText = "Your correct rate is "+this.CorrectRate+'%';
+                }
+                else{
+                    if(this.isanswer){
+                        switch(this.testdata[this.order[this.currentindex]].ansType){
+                            case "text":
+                                this.isboardText = true;
+                                this.boardText = this.testdata[this.order[this.currentindex]].ansText;
+                                break;
+                            case "img":
+                                this.isboardText = false;
+                                this.boardImg = this.testdata[this.order[this.currentindex]].ansImg;
+                                break;
+                        }
+                    }else{
+                        switch(this.testdata[this.order[this.currentindex]].quesType){
+                            case "text":
+                                this.isboardText = true;
+                                this.boardText = this.testdata[this.order[this.currentindex]].quesText;
+                                break;
+                            case "img":
+                                this.isboardText = false;
+                                this.boardImg =  this.testdata[this.order[this.currentindex]].quesImg;
+                                break;
+                        }
+                    }
+                }
+            else
+                return null;
         },
         SaveTest(){
             this.$http.post(this.$store.state.dbhost+'/testmedb/api/member/setquestion.php',JSON.stringify({
@@ -113,7 +154,7 @@ export default {
             })).then((response) => {
                 if(response.data){
                     this.$emit('updatedata');
-                    this.$swal('Success');
+                    this.swalAlert('Save success',true);
                 }
             });
         },
@@ -132,21 +173,6 @@ export default {
         QuestionCounts() {
             return this.testdata.length;
         },
-        CurrentQuestionText() {
-            if(this.QuestionCounts)
-                if(this.isfin){
-                    return "Your correct rate is "+this.CorrectRate+'%';
-                }
-                else{
-                    if(this.isanswer){
-                        return this.testdata[this.order[this.currentindex]].answer;
-                    }else{
-                        return this.testdata[this.order[this.currentindex]].question;
-                    }
-                }
-            else
-                return null;
-        },
         CorrectRate(){
             let correct = 0;
             if(this.QuestionCounts)
@@ -160,8 +186,11 @@ export default {
             else
                 return null;
         }
+    },
+    components:{
+        LBmodel
     }
 }
 </script>
 
-<style lang="scss" scoped src="@/assets/scss/components/testLB.scss"></style>
+<style lang="scss" scoped src="@/assets/scss/components/lightbox/testLB.scss"></style>
