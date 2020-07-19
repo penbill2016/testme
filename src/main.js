@@ -15,11 +15,15 @@ Vue.use(SimpleVueValidation);
 Vue.mixin({
   methods: {
     //extension
-    swalAlert(_title,_isSuccess){
+    swalAlert(_title,_isSuccess,_func){
       this.$swal.fire({
         icon: _isSuccess?'success':'error',
         title: _title        
-      })
+      }).then((result) => {
+        if(result.value){
+          _func();
+        }     
+      });
     },
     swalAlertText(_title,_text,_isSuccess){
       this.$swal.fire({

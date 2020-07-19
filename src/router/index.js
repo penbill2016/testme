@@ -9,7 +9,8 @@ import membertextedit from '@/components/member/memberTestEdit.vue'
 Vue.use(VueRouter)
 
 export default new VueRouter({
-    mode:'hash',
+    //mode:'hash',
+    mode:'history',
     routes:[
         {
             path:"/",

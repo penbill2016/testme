@@ -29,6 +29,7 @@
                 padding: 10px 20px;
                 margin-top: 20px;
                 border-radius: 5px;
+                @extend %hover_scale_11;
                 .text{
                     color: $color_white_01;
                 }

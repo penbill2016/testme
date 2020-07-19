@@ -27,7 +27,7 @@
                 <div class="headbar">
                     <h6 class="title">{{foldername}}</h6>
                     <div class="select_filter">
-                        <select v-model="testFilter" @change="LoadFolderData">
+                        <select v-model="testFilter" @change="LoadFolderData" dir="rtl">
                             <option>Created</option>
                             <option>Modified</option>
                             <option>Correctrate</option>

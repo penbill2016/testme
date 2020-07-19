@@ -13,7 +13,7 @@
                         Don't worry about that.<br>
                         You can build your own word cards and test yourself.
                     </p>
-                    <button class="loginbtn" type="button">
+                    <button class="loginbtn" type="button" @click="OpenRegistLB">
                         <h5 class="text">start now</h5>
                     </button>
                 </div>
@@ -48,6 +48,11 @@ export default {
         },
         IsForgotLB(){
             return this.$store.getters.getForgotLBOpen;
+        }
+    },
+    methods:{
+        OpenRegistLB(){
+            this.$store.state.page.login.isLoginLBOpen = true;
         }
     },
     components:{

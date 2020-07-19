@@ -33,7 +33,7 @@
                 <div class="headbar">
                     <h6 class="title">Folder</h6>
                     <div class="select_filter">
-                        <select v-model="folderFilter" @change="LoadMemberData">
+                        <select v-model="folderFilter" @change="LoadMemberData" dir="rtl">
                             <option>Created</option>
                             <option>Modified</option>
                         </select>
@@ -61,7 +61,7 @@
                 <div class="headbar">
                     <h6 class="title">Tests</h6>
                     <div class="select_filter">
-                        <select v-model="testFilter" @change="LoadMemberData">
+                        <select v-model="testFilter" @change="LoadMemberData" dir="rtl">
                             <option>Created</option>
                             <option>Modified</option>
                             <option>Correctrate</option>
@@ -224,7 +224,14 @@ export default {
                 let d_test = _this.$http.post(_this.$store.state.dbhost+'/testmedb/api/member/deletetest.php',JSON.stringify({
                     "testsid": selecteditems.tests,
                 }));
-                Promise.all([d_folder, d_test]).then(function () {
+                let promise_arr=[];
+                if(selecteditems.folders.length>0){
+                    promise_arr.push(d_folder);
+                }
+                if(selecteditems.tests.length>0){
+                    promise_arr.push(d_test);
+                }
+                Promise.race(promise_arr).then(function () {
                     _this.LoadMemberData();
                     _this.swalAlertText('Deleted!','Your file has been deleted.',true); 
                 });               

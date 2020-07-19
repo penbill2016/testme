@@ -148,13 +148,16 @@ export default {
                 return null;
         },
         SaveTest(){
+            let _this = this;
             this.$http.post(this.$store.state.dbhost+'/testmedb/api/member/setquestion.php',JSON.stringify({
                 "testid": this.$props.testid,
                 "correctrate": this.CorrectRate+'%'
             })).then((response) => {
                 if(response.data){
                     this.$emit('updatedata');
-                    this.swalAlert('Save success',true);
+                    this.swalAlert('Save success',true,function(){
+                        _this.CloseTestLB();
+                    });
                 }
             });
         },

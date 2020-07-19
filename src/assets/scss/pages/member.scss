@@ -46,28 +46,40 @@
         button{
             content: "";
             display: block;
-            width: 25px;
+            width: 40px;
             height: 25px;            
-            @extend %background_100;            
+            @extend %background_100;
+            background-size: 25px 25px;          
             background-image: url('~@/assets/img/icon/arrow_black.svg');
             transform: rotate(90deg);
             cursor: pointer;
+            border: 2px solid hsla(0, 0%, 0%, 0);
+            border-radius: 5px;
+            transition: border 0.5s ease;
+            &:hover{
+                @media screen and (min-width: 1023px) {
+                    border:2px solid $color_grey_04;
+                }
+            }
             &.islowtohigh{
                 transform: rotate(-90deg);
-            }  
+            }
         }
         select{
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            border: 0;
-            text-align-last: right;
-            display: flex;
-            align-items: center;
             padding: 10px 5px;
             font-size: 16px;
             cursor: pointer;
-            width: 90px;
+            border: 2px solid hsla(0, 0%, 0%, 0);
+            border-radius: 5px;
+            transition: border 0.5s ease;
+            &:hover{
+                @media screen and (min-width: 1023px) {
+                    border:2px solid $color_grey_04;
+                }
+            }
         }
     }
     .select_mode{
@@ -90,6 +102,12 @@
             background-position: 100% 50%;
             background-repeat: no-repeat;
             background-image: url('~@/assets/img/icon/triangle_black.svg');
+            transition: background-color 0.5s ease;
+            &:hover{
+                @media screen and (min-width: 1023px) {
+                    background-color:$color_grey_04;
+                }
+            }
         }
     }
     .toolbar{
@@ -113,6 +131,14 @@
             .text{
                 color: $color_white_01;
             }
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.5s ease;
+            &:hover{
+                @media screen and (min-width: 1023px) {
+                    background-color:$color_grey_01;
+                }
+            }
         }
         @media screen and (max-width: 768px) {
             padding: 0 15px;
@@ -133,6 +159,7 @@
     .filecontainer{
         padding: 40px 0;
         .filebox{
+            min-height: 100px;
             margin-bottom: 40px;
             .headbar{
                 display: flex;
@@ -150,6 +177,7 @@
                     align-items: center;
                     padding: 5px;
                     cursor: pointer;
+                    @extend %hover_opacity_08;
                     .icon{
                         height: 20px;
                         margin-right: 5px;
@@ -173,6 +201,13 @@
                     background-color: $color_white_01;
                     transition: transform 0.3s ease;
                     cursor: default;
+                    transition: background-color 0.5s ease;
+                    cursor: pointer;
+                    &:hover{
+                        @media screen and (min-width: 1023px) {
+                            background-color:$color_grey_04;
+                        }
+                    }
                     &.active{
                         background-color: $color_grey_04;
                         border: 1px solid $color_grey_03;
@@ -260,6 +295,7 @@
             margin-bottom: 40px;
             cursor: pointer;
             position: relative;
+            @extend %hover_scale_11;
             .btnicon{
                 width: 20px;
                 height: 20px;
@@ -341,6 +377,7 @@
                             position: relative;
                             cursor: pointer;
                             box-shadow: 0 0 5px $color_grey_04;
+                            @extend %hover_scale_11;
                             &::before{
                                 content: "";
                                 @extend %background_100;
@@ -375,6 +412,7 @@
                                 display: flex;
                                 .radiolabel{
                                     margin-left: 10px;
+                                    @extend %hover_opacity_08;
                                 }
                             }
                             .testinput,.fileinput{
@@ -426,6 +464,7 @@
                 background-color: $color_grey_03;
                 border-radius: 5px;
                 box-shadow: 0 0 5px $color_grey_04;
+                @extend %hover_scale_11;
                 .text{
                     color: $color_white_01;
                 }

@@ -44,6 +44,7 @@
                 background-size: 50% 50%;
                 background-image: url('~@/assets/img/icon/close_white.svg');
                 cursor: pointer;
+                @extend %hover_scale_11;
             }
         }
         .content{
@@ -73,6 +74,7 @@
                     align-items: center;
                     cursor: pointer;
                     margin-top: 40px;
+                    @extend %hover_opacity_08;
                     .text{
                         color: $color_white_01;
                     }
@@ -84,7 +86,8 @@
                 padding: 0 5px;
                 margin-bottom: 20px;
                 .text{
-                    color: $color_grey_03;                   
+                    color: $color_grey_03;
+                    @extend %hover_scale_11;                  
                 }
             }
         }

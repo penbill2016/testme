@@ -174,13 +174,15 @@ export default {
         getBase64(file) {
             return new Promise(function(resolve, reject) {
                 var reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = function () {
-                    resolve(reader.result);
-                };
-                reader.onerror = function (error) {
-                    reject(error);
-                };
+                if(file.size/1023<=50){
+                    reader.readAsDataURL(file);
+                    reader.onload = function () {
+                        resolve(reader.result);
+                    };
+                }
+                else{
+                    reject('Image sizes limit is 50KB');
+                }
             });
         },
         historyback() {            
@@ -210,14 +212,12 @@ export default {
                 case "ques":
                     if(event.target.files[0]){
                         let _this = this;
-                        this.getBase64(event.target.files[0]).then(function(resolve, reject){
-                            if(resolve){
-                                _this.quesTests[_index].quesImg = resolve;
-                                _this.quesTests[_index].quesImgOri = '';
-                            }
-                            else{
-                                _this.swalAlert(reject,false);
-                            }
+                        this.getBase64(event.target.files[0]).then(function(resolve){
+                            _this.quesTests[_index].quesImg = resolve;
+                            _this.quesTests[_index].quesImgOri = '';
+                        },function(reject){
+                            event.target.value = '';
+                            _this.swalAlert(reject,false);
                         });
                         if(this.isValidateOnce){
                             this.quesTests[_index].quesImg_err='';
@@ -233,14 +233,12 @@ export default {
                 case "ans":
                     if(event.target.files[0]){
                         let _this = this;
-                        this.getBase64(event.target.files[0]).then(function(resolve, reject){
-                            if(resolve){
-                                _this.quesTests[_index].ansImg = resolve;
-                                _this.quesTests[_index].ansImgOri = '';
-                            }
-                            else{
-                                _this.swalAlert(reject,false);
-                            }
+                        this.getBase64(event.target.files[0]).then(function(resolve){
+                            _this.quesTests[_index].ansImg = resolve;
+                            _this.quesTests[_index].ansImgOri = '';                            
+                        },function(reject){
+                            event.target.value = '';
+                            _this.swalAlert(reject,false);
                         });
                         if(this.isValidateOnce){
                             this.quesTests[_index].ansImg_err='';

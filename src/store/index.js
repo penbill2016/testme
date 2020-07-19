@@ -5,7 +5,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state:{
-        dbhost:".",
+        dbhost:window.location.protocol+"//"+window.location.host,
+        //dbhost:"http://localhost",
         data:{
             member:{
                 id:null,
